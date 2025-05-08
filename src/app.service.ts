@@ -4,14 +4,15 @@ import { promisify } from 'util';
 
 const scrypt = promisify(_scrypt);
 
-const users = [];
+// Tipagem explícita aqui:
+const users: { email: string; password: string }[] = [];
 
 @Injectable()
 export class AppService {
   async signUp(email: string, password: string) {
-    const existingUser  = users.find(user => user.email === email);
+    const existingUser = users.find(user => user.email === email);
     if (existingUser) {
-      return new BadRequestException('Email in use');
+      throw new BadRequestException('Email in use'); // use throw aqui!
     }
 
     const salt = randomBytes(8).toString('hex');
@@ -26,7 +27,7 @@ export class AppService {
     users.push(user);
 
     console.log('Signed up', user);
-    const { password: _,...result } = user;
+    const { password: _, ...result } = user;
     return result;
   }
 }
