@@ -6,3 +6,12 @@ Content-Type: application/json
     "email": "teste2@email.com",
     "password": "teste"
 }
+
+### signip
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+    "email": "teste2@email.com",
+    "password": "teste"
+}
