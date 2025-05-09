@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 
@@ -8,6 +9,8 @@ const users: { email: string; password: string }[] = [];
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly jwtService: JwtService) {}
+
   async signUp(email: string, password: string) {
     const existingUser = users.find(user => user.email === email);
     if (existingUser) {
@@ -44,7 +47,7 @@ export class AuthService {
     }
 
     console.log('Signed in', user);
-    const { password: _, ...result } = user;
-    return result;
+    const payload = { username: user.email, sub: user.Id };
+    return { accessToken: this.jwtService.sign(payload)};
   }
 }
